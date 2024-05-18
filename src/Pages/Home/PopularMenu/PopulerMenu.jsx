@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import SectionTitle from "../../../Components/SectionTittle/SectionTittle";
+import useMenu from "../../../Hooks/Menu/useMenu";
 import MenuItem from "../../Shared/MenuItem/MenuItem";
-import useMenu from "../../../Hooks/Menu/Menu";
 
 const PopulerMenu = () => {
     const [menu] = useMenu()
