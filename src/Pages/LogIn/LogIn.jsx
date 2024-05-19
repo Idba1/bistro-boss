@@ -1,24 +1,47 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LogInImage from "../../assets/others/authentication2.png";
 import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { AuthContext } from "../../Providers/AuthProvider";
+import SocialLogin from "../SocialLogIn/SocialLogin";
 
 const LogIn = () => {
     const captchaRef = useRef(null);
     const [disabled, setDisabled] = useState(true);
     const [captchaValue, setCaptchaValue] = useState("");
+    const { signIn } = useContext(AuthContext);
+
+
 
     useEffect(() => {
         loadCaptchaEnginge(6);
     }, []);
 
-    const handleLogin = event => {
-        event.preventDefault();
-        const form = event.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        console.log(email, password);
+    const { signInUser } = useContext(AuthContext)
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    // navigation systems
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state || "/";
+
+    const onSubmit = (data) => {
+        const { email, password } = data;
+
+
+        signInUser(email, password)
+            .then(result => {
+                if (result.user) {
+                    navigate(from);
+                }
+            });
     };
 
     const handleCaptchaChange = (e) => {
@@ -51,18 +74,27 @@ const LogIn = () => {
                         </Link>
                     </div>
                     <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100">
-                        <form className="card-body" onSubmit={handleLogin}>
+                        <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Email</span>
                                 </label>
-                                <input type="email" name="email" placeholder="email" className="input input-bordered" />
+                                <input type="email" name="email" placeholder="email" className="input input-bordered"
+                                    {...register("email", { required: true })} />
+                                {errors.email && (
+                                    <span className="text-red-500">This field is required</span>
+                                )}
                             </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="password" name="password" placeholder="password" className="input input-bordered" />
+                                <input type="password" name="password" placeholder="password" className="input input-bordered"
+                                    {...register("password", { required: true })}
+                                />
+                                {errors.password && (
+                                    <span className="text-red-500">This field is required</span>
+                                )}
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>
@@ -71,13 +103,13 @@ const LogIn = () => {
                                 <label className="label">
                                     <LoadCanvasTemplate />
                                 </label>
-                                <input 
-                                    ref={captchaRef} 
-                                    type="text" 
-                                    name="captcha" 
-                                    placeholder="type the captcha above" 
-                                    className="input input-bordered" 
-                                    onChange={handleCaptchaChange} 
+                                <input
+                                    ref={captchaRef}
+                                    type="text"
+                                    name="captcha"
+                                    placeholder="type the captcha above"
+                                    className="input input-bordered"
+                                    onChange={handleCaptchaChange}
                                 />
                                 <button type="button" onClick={handleValidateCaptcha} className="btn btn-outline btn-sm mt-2">Validate</button>
                             </div>
@@ -86,6 +118,13 @@ const LogIn = () => {
                             </div>
                         </form>
                         <p className="flex mx-auto mb-11 text-orange-400"><small>New Here? <Link to="/signup">Create an account</Link> </small></p>
+                        <div >
+                            <p className="flex mx-autotext-orange-400"><small>Continue with social media</small></p>
+                            <div className="card-body grid md:grid-cols-2">
+                                <SocialLogin></SocialLogin>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
