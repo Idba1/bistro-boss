@@ -1,18 +1,32 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import LogInImage from "../../assets/others/authentication2.png"
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { useEffect } from "react";
 
 const LogIn = () => {
+
+    useEffect(() => {
+        loadCaptchaEnginge(6);
+    }, [])
+
+    const handleLogin = event => {
+        event.preventDefault();
+        const form = event.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log(email, password);
+    }
     return (
         <div>
             <Helmet>
                 <title>Bistro Boss | Login</title>
             </Helmet>
             <div className="hero min-h-screen bg-base-200">
-                <div className="hero-content flex-col md:flex-row border-gray-400 shadow-md p-14">
+                <div className="hero-content flex-col md:flex-row border-gray-400 p-1 shadow-md lg:p-14">
                     <div className="text-center md:w-1/2 lg:text-left">
                         <img src={LogInImage} alt="" />
-                        
+
                         <Link to={'/'}>
                             <button className="btn btn-outline bg-slate-100 border-0 border-b-4 border-orange-400 mt-4 flex mx-auto hover:bg-orange-400 hover:border-orange-700">
                                 Home
@@ -20,7 +34,7 @@ const LogIn = () => {
                         </Link>
                     </div>
                     <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100">
-                        <form className="card-body">
+                        <form className="card-body" onSubmit={handleLogin}>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Email</span>
@@ -38,9 +52,10 @@ const LogIn = () => {
                             </div>
                             <div className="form-control">
                                 <label className="label">
-                                    {/* <LoadCanvasTemplate /> */}
+                                    <LoadCanvasTemplate />
                                 </label>
                                 <input type="text" name="captcha" placeholder="type the captcha above" className="input input-bordered" />
+                                <button className="btn btn-outline btn-sm mt-2">validate</button>
 
                             </div>
                             <div className="form-control mt-6">

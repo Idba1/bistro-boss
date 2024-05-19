@@ -9,7 +9,7 @@ const SignUp = () => {
                 <title>Bistro Boss | SignUp</title>
             </Helmet>
             <div className="hero min-h-screen bg-base-200">
-                <div className="hero-content flex-col md:flex-row-reverse border-gray-400 shadow-md p-14">
+                <div className="hero-content flex-col md:flex-row-reverse p-1 border-gray-400 shadow-md lg:p-14">
                     <div className="text-center md:w-1/2 lg:text-left">
                         <img src={SignUpImage} alt="" />
 
